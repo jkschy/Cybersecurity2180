@@ -1,0 +1,139 @@
+import random
+import time
+
+comDeck = []
+convertedComDeck = []
+usrDeck = []
+convertedUsrDeck = []
+
+
+def main():
+    shuffleDecks()
+    convertDecks()
+    playGame()
+
+def convertDecks(): #Converts Decks From Letters To Numbers
+    tempCard = int(-1)
+    for card in comDeck: #Runs through computers Cards
+        try:
+            convertedComDeck.append(int(card))
+        except ValueError as e: #If it cannot convert
+            if card == "J":
+                tempCard = int(11)
+                convertedComDeck.append(int(tempCard))
+            elif card == "Q":
+                tempCard = int(12)
+                convertedComDeck.append(int(tempCard))
+            elif card == "K":
+                tempCard = int(13)
+                convertedComDeck.append(int(tempCard))
+            elif card == "A":
+                tempCard = int(14)
+                convertedComDeck.append(int(tempCard))
+    for card in usrDeck: #Runs Through the users Deck
+        try:
+            convertedUsrDeck.append(int(card))
+        except ValueError as e:
+            if card == "J":
+                tempCard = int(11)
+                convertedUsrDeck.append(int(tempCard))
+            elif card == "Q":
+                tempCard = int(12)
+                convertedUsrDeck.append(int(tempCard))
+            elif card == "K":
+                tempCard = int(13)
+                convertedUsrDeck.append(int(tempCard))
+            elif card == "A":
+                tempCard = int(14)
+                convertedUsrDeck.append(int(tempCard))
+
+def shuffleDecks():
+    deck = ["A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"]
+    numLeft = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+    cards = 0
+    while cards != 52:
+        card = random.randint(0, 12)
+        if cards % 2 == 0:
+            if numLeft[card] != 0:
+                usrDeck.append(deck[card])
+                numLeft[card] = numLeft[card] - 1
+                cards += 1
+        else:
+            if numLeft[card] != 0:
+                comDeck.append(deck[card])
+                numLeft[card] = numLeft[card] - 1
+                cards += 1
+
+def playGame():
+    while(len(usrDeck) != 0) and (len(comDeck) != 0):
+        answer = input("Hit ENTER to continue (Q to quit) ")
+        print("\n")
+        if answer == "":
+            dealCard()
+        elif answer.capitalize() == "Q":
+            raise SystemExit
+        elif answer.capitalize() == "D":
+            debug()
+def debug():
+    while (len(usrDeck) != 0) and (len(comDeck) != 0):
+        dealCard()
+
+def dealCard():
+    result = "You Win"
+
+    #Checks who wins
+    time.sleep(.8)
+    print(" Your Card: " + usrDeck[0] + "(Cards Left: " + str(len(usrDeck)) + ")\n Their Card: " + comDeck[0] +
+          "(Cards Left: " + str(len(comDeck)) + ")\n Result: ", end="")
+    if convertedUsrDeck[0] > convertedComDeck[0]:
+        result = "You Win"
+        print(result)
+        youWin()
+    elif convertedComDeck[0] > convertedUsrDeck[0]:
+        result = "Computer Wins"
+        print(result)
+        comWins()
+    else:
+        result = "War"
+        print(result)
+        War()
+
+def youWin():
+    convertedUsrDeck.append(convertedUsrDeck[0])
+    convertedUsrDeck.append(convertedComDeck[0])
+    del convertedUsrDeck[0]
+    del convertedComDeck[0]
+    usrDeck.append(usrDeck[0])
+    usrDeck.append(comDeck[0])
+    del usrDeck[0]
+    del comDeck[0]
+
+def comWins():
+    convertedComDeck.append((convertedComDeck[0]))
+    convertedComDeck.append((convertedUsrDeck[0]))
+    del convertedUsrDeck[0]
+    del convertedComDeck[0]
+    comDeck.append(comDeck[0])
+    comDeck.append(usrDeck[0])
+    del usrDeck[0]
+    del comDeck[0]
+
+def War():
+    print("\n")
+    print("War, Place down 3 cards and then reveal one, winner gets all the cards!")
+    time.sleep(2)
+    print(" Your Card: " + usrDeck[3] + "\n Their Card: " + comDeck[3] + "\n Result: ", end="")
+    if convertedUsrDeck[3] > convertedComDeck[3]:
+        result = "You Win"
+        for item in range(0, 4):
+            youWin()
+    elif convertedComDeck[3] > convertedUsrDeck[3]:
+        result = "Computer Wins"
+        for item in range(0, 4):
+            youWin()
+    else:
+        result = "War"
+    print(result)
+
+if __name__ == '__main__':
+    main()
